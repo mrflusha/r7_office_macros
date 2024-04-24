@@ -1,0 +1,79 @@
+Dim ar1()
+Dim k As Integer
+Dim v As String
+
+
+Public Sub CpyVis()
+
+For Each cell In Selection
+If cell.EntireRow.Hidden = True Or cell.EntireColumn.Hidden = True Then
+Else
+k = k + 1
+End If
+Next cell
+ReDim ar1(k)
+i = 0
+For Each cell In Selection
+If cell.EntireRow.Hidden = True Or cell.EntireColumn.Hidden = True Then
+Else
+i = i + 1
+ar1(i) = "'[" & ActiveWindow.Caption & "]" & ActiveSheet.Name & "'!" & cell.Address
+End If
+
+Next cell
+End Sub
+
+Public Sub PstVis()
+j = 0
+For Each cell In Selection
+If cell.EntireRow.Hidden = True Or cell.EntireColumn.Hidden = True Then
+Else
+j = j + 1
+v = ar1(j)
+cell.Formula = "=" & v
+ar1(j) = ""
+End If
+
+Next cell
+
+End Sub
+Public Sub PstVisPlus()
+j = 0
+For Each cell In Selection
+If cell.EntireRow.Hidden = True Or cell.EntireColumn.Hidden = True Then
+Else
+j = j + 1
+cell.Formula = cell.Formula & "+" & ar1(j)
+End If
+
+Next cell
+
+End Sub
+
+
+Sub MakeHiddenSheetsVisible()
+    For Each sheet In ActiveWorkbook.Sheets
+        If sheet.Visible > -1 Then
+            sheet.Visible = -1
+        End If
+    Next sheet
+End Sub
+
+Sub SheetList()
+   Dim sheet As Worksheet
+   Dim cell As Range
+   With ActiveWorkbook
+      For Each sheet In ActiveWorkbook.Worksheets
+         Set cell = Worksheets(1).Cells(sheet.Index, 1)
+         .Worksheets(1).Hyperlinks.Add anchor:=cell, Address:="", SubAddress:="'" & sheet.Name & "'" & "!A1"
+         cell.Formula = sheet.Name
+      Next
+   End With
+End Sub
+
+Sub RenameSheets()   'в названии каждого листа заменяет пробелы на подчеркивания
+   For Each Sh In ActiveWorkbook.Sheets
+      Sh.Name = Replace(Sh.Name, " ", "_")
+   Next Sh
+End Sub
+
